@@ -7,7 +7,7 @@ import userSchema from '../validators';
 const router = express
   .Router()
   .get('/list', (req: Request, res: Response) => {
-    const userList = UserService.getUserList(
+    const userList = UserService.getList(
       req.query.loginSubstring as string,
       parseInt((req.query.limit as string) || '8', 10)
     );
@@ -15,7 +15,7 @@ const router = express
     res.json(userList);
   })
   .get('/:userId', (req: Request, res: Response) => {
-    const user = UserService.getUserById(req.params.userId);
+    const user = UserService.getById(req.params.userId);
 
     if (user) {
       res.json(user);
@@ -27,10 +27,10 @@ const router = express
     }
   })
   .post('/create', validationSchema(userSchema), (req: Request, res: Response) =>
-    res.json(UserService.createUser(req.body))
+    res.json(UserService.create(req.body))
   )
   .post('/:userId', validationSchema(userSchema), (req: Request, res: Response) => {
-    const updatedUser = UserService.updateUser(req.params.userId, req.body);
+    const updatedUser = UserService.update(req.params.userId, req.body);
 
     if (updatedUser) {
       res.json(updatedUser);
@@ -42,7 +42,7 @@ const router = express
     }
   })
   .delete('/:userId', (req: Request, res: Response) => {
-    const removedUser = UserService.deleteUser(req.params.userId);
+    const removedUser = UserService.delete(req.params.userId);
 
     if (removedUser) {
       res.json(removedUser);
