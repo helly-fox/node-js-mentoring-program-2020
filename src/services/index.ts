@@ -1,30 +1,26 @@
 import { v4 as uuid } from 'uuid';
 import { sortBy, pipe, prop, filter, includes, take, find, findIndex } from 'ramda';
-import Index from '../models';
+import { User } from '../models';
 
 const NULL_INDEX = -1;
 const MAX_ITEMS_LENGTH = 8;
 
 class UserService {
-  users: Index[];
+  private users: User[] = [];
 
-  constructor() {
-    this.users = [];
+  public getUserById(userId: string): User | undefined {
+    return find((u: User) => u.id === userId && !u.isDeleted)(this.users);
   }
 
-  getUserById(userId: string) {
-    return find((u: Index) => u.id === userId)(this.users);
-  }
-
-  getUserList(loginSubstring: string = '', limit: number = MAX_ITEMS_LENGTH) {
+  public getUserList(loginSubstring: string = '', limit: number = MAX_ITEMS_LENGTH) {
     return pipe(
-      loginSubstring ? filter((u: Index) => includes(loginSubstring, u.login)) : (arr: Index[]) => arr,
+      loginSubstring ? filter((u: User) => includes(loginSubstring, u.login) && !u.isDeleted) : (arr: User[]) => arr,
       sortBy(prop('login')),
       take(limit)
     )(this.users);
   }
 
-  createUser(user: Omit<Index, 'id' | 'isDeleted'>) {
+  public createUser(user: Omit<User, 'id' | 'isDeleted'>): User {
     const newUser = {
       id: uuid(),
       isDeleted: false,
@@ -36,8 +32,8 @@ class UserService {
     return newUser;
   }
 
-  updateUser(userId: string, user: Omit<Partial<Index>, 'id'>) {
-    const userIndex = findIndex(({ id }: Index) => userId === id)(this.users);
+  public updateUser(userId: string, user: Omit<Partial<User>, 'id'>): User | null {
+    const userIndex = findIndex(({ id, isDeleted }: User) => userId === id && !isDeleted)(this.users);
 
     if (userIndex === NULL_INDEX) return null;
 
@@ -49,8 +45,8 @@ class UserService {
     return this.users[userIndex];
   }
 
-  deleteUser(userId: string) {
-    const userIndex = this.users.findIndex(({ id }: Index) => id === userId);
+  public deleteUser(userId: string): User | null {
+    const userIndex = this.users.findIndex(({ id, isDeleted }: User) => id === userId && !isDeleted);
 
     if (userIndex === NULL_INDEX) return null;
 
