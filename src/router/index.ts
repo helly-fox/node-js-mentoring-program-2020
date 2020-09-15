@@ -1,21 +1,21 @@
 import express, { Request, Response } from 'express';
 import STATUS from 'src/constants';
 import UserService from '../services';
-import validationSchema from '../middleware';
-import userSchema from '../validators';
+import { validationBodySchema, validationUserIdSchema } from '../middleware';
+import { userSchema, idSchema } from '../validators';
 
 const router = express
   .Router()
-  .get('/list', (req: Request, res: Response) => {
-    const userList = UserService.getList(
+  .get('/list', async (req: Request, res: Response) => {
+    const userList = await UserService.getList(
       req.query.loginSubstring as string,
       parseInt((req.query.limit as string) || '8', 10)
     );
 
     res.json(userList);
   })
-  .get('/:userId', (req: Request, res: Response) => {
-    const user = UserService.getById(req.params.userId);
+  .get('/:userId', validationUserIdSchema(idSchema), async (req: Request, res: Response) => {
+    const user = await UserService.getById(req.params.userId);
 
     if (user) {
       res.json(user);
@@ -26,23 +26,30 @@ const router = express
       });
     }
   })
-  .post('/create', validationSchema(userSchema), (req: Request, res: Response) =>
-    res.json(UserService.create(req.body))
-  )
-  .post('/:userId', validationSchema(userSchema), (req: Request, res: Response) => {
-    const updatedUser = UserService.update(req.params.userId, req.body);
+  .post('/create', validationBodySchema(userSchema), async (req: Request, res: Response) => {
+    const newUser = await UserService.create(req.body);
 
-    if (updatedUser) {
-      res.json(updatedUser);
-    } else {
-      res.status(STATUS.NOT_FOUND).json({
-        status: 'failed',
-        message: `User with ${req.params.userId} does not exists`,
-      });
-    }
+    res.json(newUser);
   })
-  .delete('/:userId', (req: Request, res: Response) => {
-    const removedUser = UserService.delete(req.params.userId);
+  .post(
+    '/:userId',
+    validationBodySchema(userSchema),
+    validationUserIdSchema(idSchema),
+    async (req: Request, res: Response) => {
+      const updatedUser = await UserService.update(req.params.userId, req.body);
+
+      if (updatedUser) {
+        res.json(updatedUser);
+      } else {
+        res.status(STATUS.NOT_FOUND).json({
+          status: 'failed',
+          message: `User with ${req.params.userId} does not exists`,
+        });
+      }
+    }
+  )
+  .delete('/:userId', validationUserIdSchema(idSchema), async (req: Request, res: Response) => {
+    const removedUser = await UserService.delete(req.params.userId);
 
     if (removedUser) {
       res.json(removedUser);

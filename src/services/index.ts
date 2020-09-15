@@ -1,58 +1,51 @@
 import { v4 as uuid } from 'uuid';
-import { sortBy, pipe, prop, filter, includes, take, find, findIndex } from 'ramda';
-import { User } from '../models';
+import { Op } from 'sequelize';
+import UserModel from '../models';
+import { User, UserServiceInterface } from '../types';
 
-const NULL_INDEX = -1;
 const MAX_ITEMS_LENGTH = 8;
 
-class UserService {
-  private users: User[] = [];
+class UserService implements UserServiceInterface {
 
-  public getById(userId: string): User | undefined {
-    return find((u: User) => u.id === userId && !u.isDeleted)(this.users);
+  // eslint-disable-next-line class-methods-use-this
+  public getById(userId: string): Promise<UserModel | null> {
+    return UserModel.findOne({ where: { id: userId } });
   }
 
-  public getList(loginSubstring: string = '', limit: number = MAX_ITEMS_LENGTH) {
-    return pipe(
-      loginSubstring ? filter((u: User) => includes(loginSubstring, u.login) && !u.isDeleted) : (arr: User[]) => arr,
-      sortBy(prop('login')),
-      take(limit)
-    )(this.users);
+  // eslint-disable-next-line class-methods-use-this
+  public getList(loginSubstring: string = '', limit: number = MAX_ITEMS_LENGTH): Promise<UserModel[]> {
+    return UserModel.findAll({
+      ...(loginSubstring && { where: { login: { [Op.startsWith]: loginSubstring } } }),
+      raw: true,
+      limit,
+      order: [ 'login' ],
+    });
   }
 
-  public create(user: Omit<User, 'id' | 'isDeleted'>): User {
-    const newUser = {
+  // eslint-disable-next-line class-methods-use-this
+  public create(user: Omit<User, 'id'>): Promise<UserModel> {
+    return UserModel.create({
       id: uuid(),
-      isDeleted: false,
       ...user,
-    };
-
-    this.users.push(newUser);
-
-    return newUser;
+    });
   }
 
-  public update(userId: string, user: Omit<Partial<User>, 'id'>): User | null {
-    const userIndex = findIndex(({ id, isDeleted }: User) => userId === id && !isDeleted)(this.users);
-
-    if (userIndex === NULL_INDEX) return null;
-
-    this.users[userIndex] = {
-      ...this.users[userIndex],
-      ...user,
-    };
-
-    return this.users[userIndex];
+  // eslint-disable-next-line class-methods-use-this
+  public update(userId: string, user: Omit<Partial<User>, 'id'>): Promise<number | UserModel[]> {
+    return UserModel.update(user, {
+      where: {
+        id: userId,
+      },
+    }).then(updatedUser => updatedUser[0]);
   }
 
-  public delete(userId: string): User | null {
-    const userIndex = this.users.findIndex(({ id, isDeleted }: User) => id === userId && !isDeleted);
-
-    if (userIndex === NULL_INDEX) return null;
-
-    this.users[userIndex].isDeleted = true;
-
-    return this.users[userIndex];
+  // eslint-disable-next-line class-methods-use-this
+  public delete(userId: string): Promise<number> {
+    return UserModel.destroy({
+      where: {
+        id: userId,
+      },
+    });
   }
 }
 
