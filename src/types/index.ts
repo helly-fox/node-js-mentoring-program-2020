@@ -1,16 +1,27 @@
-import UserModel from "src/models";
+import { Model, Transaction } from 'sequelize';
 
 export type User = {
   id: string;
   login: string;
   password: string;
   age: number;
+};
+
+export type Permission = 'READ' | 'WRITE' | 'DELETE' | 'SHARE' | 'UPLOAD_IMAGES';
+
+export interface Group {
+  id: string;
+  name: string;
+  permission: Permission[];
 }
 
-export interface UserServiceInterface {
-  getById(userId: string): Promise<UserModel | null>;
-  getList(loginSubstring: string, limit: number): Promise<UserModel[]>;
-  create(user: Omit<User, 'id'>): Promise<UserModel>;
-  update(userId: string, user: Omit<Partial<User>, 'id'>): Promise<number | UserModel[]>;
-  delete(userId: string): Promise<number>;
+export interface GroupUserInstance {
+  userId: string;
+  groupId: string;
+}
+
+export interface UserInstance extends Model<User>, User {
+}
+export interface GroupInstance extends Model<Group>, Group {
+  addUsers: (user: UserInstance, options: { transaction: Transaction } ) => Promise<GroupUserInstance>
 }
