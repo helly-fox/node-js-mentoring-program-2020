@@ -1,0 +1,332 @@
+{
+	"info": {
+		"_postman_id": "d71d5720-1ddb-4d4f-bf93-4ca5ee8e935f",
+		"name": "Mentoring",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create useer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"login\": \"User 1\",\n\t\"password\": \"passwordForUser1\",\n\t\"age\": 30\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{ID HERE}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{ID HERE}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"login\": \"User updated\",\n\t\"password\": \"UpdatedpasswordForUser1\",\n\t\"age\": 31\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{id comes here}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{id comes here}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{id goes here}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{id goes here}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/list?limit=12&loginSubstring=User",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"list"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "12"
+								},
+								{
+									"key": "loginSubstring",
+									"value": "User"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "Create group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Admin\",\n\t\"permission\": [\n            \"WRITE\",\n            \"READ\",\n            \"SHARE\",\n            \"DELETE\",\n            \"UPLOAD_IMAGES\"\n        ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get groupd by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/{{group id comes here}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								"{{group id comes here}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update group by ID",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Viewer\",\n\t\"permission\": [\"READ\", \"SHARE\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/{{id comes here}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								"{{id comes here}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete group",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/{{ID comes here}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								"{{ID comes here}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Group list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/list",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assign User to Group",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "0c32f3f2-005c-4e35-bdb4-484d41d941af",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2ea0e0c1-92c7-4c42-89ee-b4a1619b151e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "a74fd880-8a9e-4a88-99c3-1c1f8150fe6a",
+			"key": "baseUrl",
+			"value": "localhost:3004/api",
+			"type": "string"
+		}
+	]
+}
