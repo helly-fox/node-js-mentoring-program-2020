@@ -1,8 +1,14 @@
-export const STATUS = {
-  NOT_FOUND: 404,
-  INVALID: 400,
-  SERVER_ERROR: 503,
-};
+/* eslint-disable no-magic-numbers */
+export enum STATUS {
+  NOT_FOUND = 404,
+  INVALID = 400,
+  SERVER_ERROR = 503,
+}
 
-// ToDo: add const;
-export default [ 'READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_IMAGES' ];
+export enum PERMISSIONS {
+  READ = 'READ',
+  WRITE = 'WRITE',
+  DELETE = 'DELETE',
+  SHARE = 'SHARE',
+  UPLOAD_IMAGES = 'UPLOAD_IMAGES',
+}
