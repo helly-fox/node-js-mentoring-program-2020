@@ -5,7 +5,7 @@ import { validationBodySchema, validationIdSchema } from '../middleware';
 import { userSchema, idSchema } from '../validators';
 
 const router = Router()
-  .get('/list', async (req: Request, res: Response) => {
+  .get('/', async (req: Request, res: Response) => {
     const userList = await UserService.getList(
       req.query.loginSubstring as string,
       parseInt((req.query.limit as string) || '8', 10)
@@ -25,12 +25,12 @@ const router = Router()
       });
     }
   })
-  .post('/create', validationBodySchema(userSchema), async (req: Request, res: Response) => {
+  .post('/', validationBodySchema(userSchema), async (req: Request, res: Response) => {
     const newUser = await UserService.create(req.body);
 
     res.json(newUser);
   })
-  .post(
+  .put(
     '/:userId',
     validationBodySchema(userSchema),
     validationIdSchema(idSchema, 'userId'),
@@ -51,7 +51,7 @@ const router = Router()
     const removedUser = await UserService.delete(req.params.userId);
 
     if (removedUser) {
-      res.json(removedUser);
+      res.send(`User with ${req.params.userId} ID is successfully removed`);
     } else {
       res.status(STATUS.NOT_FOUND).json({
         status: 'failed',

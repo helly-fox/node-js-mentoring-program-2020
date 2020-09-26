@@ -25,13 +25,12 @@
 							"raw": "{\n\t\"login\": \"User 1\",\n\t\"password\": \"passwordForUser1\",\n\t\"age\": 30\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/users/create",
+							"raw": "{{baseUrl}}/users",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"users",
-								"create"
+								"users"
 							]
 						}
 					},
@@ -72,7 +71,7 @@
 				{
 					"name": "Update user",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -130,13 +129,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{baseUrl}}/users/list?limit=12&loginSubstring=User",
+							"raw": "{{baseUrl}}/users/?limit=12&loginSubstring=User",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"users",
-								"list"
+								"users"
 							],
 							"query": [
 								{
@@ -174,13 +172,12 @@
 							"raw": "{\n\t\"name\": \"Admin\",\n\t\"permission\": [\n            \"WRITE\",\n            \"READ\",\n            \"SHARE\",\n            \"DELETE\",\n            \"UPLOAD_IMAGES\"\n        ]\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/groups/create",
+							"raw": "{{baseUrl}}/groups",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"groups",
-								"create"
+								"groups"
 							]
 						}
 					},
@@ -211,7 +208,7 @@
 				{
 					"name": "Update group by ID",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -269,13 +266,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{baseUrl}}/groups/list",
+							"raw": "{{baseUrl}}/groups",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"groups",
-								"list"
+								"groups"
 							]
 						}
 					},

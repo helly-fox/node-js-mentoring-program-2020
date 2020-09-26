@@ -1,4 +1,5 @@
 import { Model, Transaction } from 'sequelize';
+import { PERMISSIONS } from '../constants';
 
 export type User = {
   id: string;
@@ -7,7 +8,7 @@ export type User = {
   age: number;
 };
 
-export type Permission = 'READ' | 'WRITE' | 'DELETE' | 'SHARE' | 'UPLOAD_IMAGES';
+export type Permission = keyof typeof PERMISSIONS;
 
 export interface Group {
   id: string;

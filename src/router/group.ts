@@ -1,28 +1,33 @@
 import { Request, Response, Router } from 'express';
 import { STATUS } from 'src/constants';
 import { GroupService } from '../services';
-import { validationIdSchema, validationBodySchema } from '../middleware';
+import { validationIdSchema, validationBodySchema, validationUserIdsSchema } from '../middleware';
 import { idSchema, groupSchema } from '../validators';
 
 const router = Router()
-  .post('/assign/', validationIdSchema(idSchema, 'groupId'), async (req: Request, res: Response) => {
-    const result = await GroupService.addUsersToGroup(req.body.groupId, req.body.userIds as string[]);
+  .post(
+    '/assign/',
+    validationIdSchema(idSchema, 'groupId'),
+    validationUserIdsSchema(idSchema),
+    async (req: Request, res: Response) => {
+      const result = await GroupService.addUsersToGroup(req.body.groupId, req.body.userIds as string[]);
 
-    if (result) {
-      res.json(result);
-    } else {
-      res.status(STATUS.NOT_FOUND).json({
-        status: 'failed',
-        message: `Group with or users do not exist`,
-      });
+      if (result) {
+        res.json(result);
+      } else {
+        res.status(STATUS.NOT_FOUND).json({
+          status: 'failed',
+          message: `Group with or users do not exist`,
+        });
+      }
     }
-  })
-  .get('/list', async (req: Request, res: Response) => {
+  )
+  .get('/', async (req: Request, res: Response) => {
     const groupList = await GroupService.getList();
 
     res.json(groupList);
   })
-  .post('/create', validationBodySchema(groupSchema), async (req: Request, res: Response) => {
+  .post('/', validationBodySchema(groupSchema), async (req: Request, res: Response) => {
     const newGroup = await GroupService.create(req.body);
 
     res.json(newGroup);
@@ -39,7 +44,7 @@ const router = Router()
       });
     }
   })
-  .post('/:groupId', validationIdSchema(idSchema, 'groupId'), async (req: Request, res: Response) => {
+  .put('/:groupId', validationIdSchema(idSchema, 'groupId'), async (req: Request, res: Response) => {
     const updatedGroup = await GroupService.update(req.params.groupId, req.body);
 
     if (updatedGroup) {
@@ -55,7 +60,7 @@ const router = Router()
     const removedGroup = await GroupService.delete(req.params.groupId);
 
     if (removedGroup) {
-      res.json(removedGroup);
+      res.send(`Group with ${req.params.groupId} ID is successfully removed`);
     } else {
       res.status(STATUS.NOT_FOUND).json({
         status: 'failed',
