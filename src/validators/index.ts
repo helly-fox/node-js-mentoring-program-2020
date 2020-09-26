@@ -1,7 +1,10 @@
 import Joi from 'joi';
+import { values } from 'ramda';
+import { PERMISSIONS } from '../constants';
 
 const MAX_AGE = 130;
 const MIN_AGE = 4;
+const NAME_MIN_LENGTH = 3;
 const LOGIN_MIN_LENGTH = 3;
 
 export const userSchema = Joi.object({
@@ -10,4 +13,11 @@ export const userSchema = Joi.object({
   age: Joi.number().integer().min(MIN_AGE).max(MAX_AGE).required(),
 });
 
-export const idSchema = Joi.string().guid({ version: "uuidv4" });
+export const groupSchema = Joi.object({
+  name: Joi.string().min(NAME_MIN_LENGTH).required(),
+  permission: Joi.array()
+    .items(Joi.string().valid(...values(PERMISSIONS)))
+    .required(),
+});
+
+export const idSchema = Joi.string().guid({ version: 'uuidv4' });
