@@ -3,6 +3,7 @@ export enum STATUS {
   NOT_FOUND = 404,
   INVALID = 400,
   SERVER_ERROR = 503,
+  INTERNAL_SERVER_ERROR = 500,
 }
 
 export enum PERMISSIONS {
