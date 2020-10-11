@@ -56,9 +56,13 @@ export const validationUserIdsSchema = (schema: Joi.AnySchema) => (req: Request,
   }
 };
 
+const hidePassword = (body: { password?: string }) => {
+  return { ...body, ...(body.password && { password: '***' }) };
+};
+
 export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const queryString = JSON.stringify(req.query);
-  const bodyString = JSON.stringify(req.body);
+  const bodyString = JSON.stringify(hidePassword(req.body));
 
   logger.info(
     `${req.method} ${req.originalUrl}${queryString ? `\n\tREQUEST QUERY PARAMS: ${queryString}` : ''}${
@@ -70,7 +74,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
 
 export const errorLogger = (err: Error, req: Request, res: Response, next: NextFunction) => {
   const queryString = JSON.stringify(req.query);
-  const bodyString = JSON.stringify(req.body);
+  const bodyString = JSON.stringify(hidePassword(req.body));
 
   logger.error(
     `${req.method} ${req.originalUrl}${queryString ? `\n\tREQUEST QUERY PARAMS: ${queryString}` : ''}${
