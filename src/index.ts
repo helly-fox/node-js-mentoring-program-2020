@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import router from 'src/router';
 import { STATUS } from 'src/constants';
 import { requestLogger, trackExecutionTime } from 'src/middleware';
@@ -7,6 +8,11 @@ import logger from './config/logger';
 
 const DEFAULT_PORT = 3004;
 const port = process.env.PORT || DEFAULT_PORT;
+
+const corsOptions = {
+    origin: 'http://localhost:8080',
+    optionsSuccessStatus: 200 // For legacy browser support
+};
 
 (async () => {
   await db.sequelize.sync({ force: true });
@@ -21,6 +27,7 @@ const port = process.env.PORT || DEFAULT_PORT;
 
   return express()
     .use(express.json())
+    .use(cors(corsOptions))
     .use(trackExecutionTime)
     .use(requestLogger)
     .use('/api', router)

@@ -1,12 +1,19 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { STATUS } from 'src/constants';
 import { GroupService } from '../services';
-import { validationIdSchema, validationBodySchema, validationUserIdsSchema, errorLogger } from '../middleware';
+import {
+  validationIdSchema,
+  validationBodySchema,
+  validationUserIdsSchema,
+  errorLogger,
+  checkAuth,
+} from '../middleware';
 import { idSchema, groupSchema } from '../validators';
 
 const router = Router()
   .post(
     '/assign/',
+    checkAuth,
     validationIdSchema(idSchema, 'groupId'),
     validationUserIdsSchema(idSchema),
     async (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +33,7 @@ const router = Router()
       }
     }
   )
-  .get('/', async (req: Request, res: Response) => {
+  .get('/', checkAuth, async (req: Request, res: Response) => {
     const groupList = await GroupService.getList();
 
     res.json(groupList);
@@ -42,6 +49,7 @@ const router = Router()
   })
   .get(
     '/:groupId',
+    checkAuth,
     validationIdSchema(idSchema, 'groupId'),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -62,6 +70,7 @@ const router = Router()
   )
   .put(
     '/:groupId',
+    checkAuth,
     validationIdSchema(idSchema, 'groupId'),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -82,6 +91,7 @@ const router = Router()
   )
   .delete(
     '/:groupId',
+    checkAuth,
     validationIdSchema(idSchema, 'groupId'),
     async (req: Request, res: Response, next: NextFunction) => {
       try {

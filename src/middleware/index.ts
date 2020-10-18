@@ -1,5 +1,6 @@
 import { STATUS } from 'src/constants';
 import Joi from 'joi';
+import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import logger from '../config/logger';
 
@@ -72,7 +73,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
   next();
 };
 
-export const errorLogger = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const errorLogger = (err: Error, req: Request, res: Response) => {
   const queryString = JSON.stringify(req.query);
   const bodyString = JSON.stringify(hidePassword(req.body));
 
@@ -91,4 +92,21 @@ export const trackExecutionTime = (req: Request, res: Response, next: NextFuncti
     logger.info(`${req.method} ${req.originalUrl} request duration: ${Date.now() - start}`);
   });
   next();
+};
+
+export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
+  // eslint-disable-next-line no-magic-numbers
+  const token = req.headers.authorization?.split(' ')?.[1];
+
+  if (!token) {
+    res.status(STATUS.FORBIDDEN).send(' Forbidden Error');
+  }
+
+  return jwt.verify(token as string, process.env.SECRET as string, (err) => {
+    if (err) {
+      return res.status(STATUS.UNAUTHORIZED).send('Unauthorized Error');
+    }
+
+    next();
+  });
 };

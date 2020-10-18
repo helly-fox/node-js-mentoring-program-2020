@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { STATUS } from 'src/constants';
 import { UserService } from '../services';
-import { errorLogger, validationBodySchema, validationIdSchema } from '../middleware';
+import { errorLogger, validationBodySchema, validationIdSchema, checkAuth } from '../middleware';
 import { userSchema, idSchema } from '../validators';
 
 const router = Router()
@@ -13,22 +13,27 @@ const router = Router()
 
     res.json(userList);
   })
-  .get('/:userId', validationIdSchema(idSchema, 'userId'), async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const user = await UserService.getById(req.params.userId);
+  .get(
+    '/:userId',
+    checkAuth,
+    validationIdSchema(idSchema, 'userId'),
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const user = await UserService.getById(req.params.userId);
 
-      if (user) {
-        res.json(user);
-      } else {
-        res.status(STATUS.NOT_FOUND).json({
-          status: 'failed',
-          message: `User with ${req.params.userId} does not exists`,
-        });
+        if (user) {
+          res.json(user);
+        } else {
+          res.status(STATUS.NOT_FOUND).json({
+            status: 'failed',
+            message: `User with ${req.params.userId} does not exists`,
+          });
+        }
+      } catch (e) {
+        next(e);
       }
-    } catch (e) {
-      next(e);
     }
-  })
+  )
   .post('/', validationBodySchema(userSchema), async (req: Request, res: Response, next: NextFunction) => {
     try {
       const newUser = await UserService.create(req.body);
@@ -40,6 +45,7 @@ const router = Router()
   })
   .put(
     '/:userId',
+    checkAuth,
     validationBodySchema(userSchema),
     validationIdSchema(idSchema, 'userId'),
     async (req: Request, res: Response, next: NextFunction) => {
@@ -61,6 +67,7 @@ const router = Router()
   )
   .delete(
     '/:userId',
+    checkAuth,
     validationIdSchema(idSchema, 'userId'),
     async (req: Request, res: Response, next: NextFunction) => {
       try {
