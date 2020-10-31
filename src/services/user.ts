@@ -13,6 +13,7 @@ export interface UserServiceInterface {
   update(userId: string, user: Omit<Partial<User>, 'id'>): Promise<number | UserInstance[]>;
   delete(userId: string): Promise<number>;
   getByIds(userIds: string[]): Promise<UserInstance[] | null>;
+  getByName(name: string): Promise<UserInstance | null>;
 }
 
 class UserService implements UserServiceInterface {
@@ -31,7 +32,7 @@ class UserService implements UserServiceInterface {
     });
   }
 
-    // eslint-disable-next-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
   public getByIds(userIds: string[]): Promise<UserInstance[]> {
     return UserModel.findAll({ where: { id: userIds } });
   }
@@ -60,6 +61,11 @@ class UserService implements UserServiceInterface {
         id: userId,
       },
     });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public getByName(name: string): Promise<UserInstance | null> {
+    return UserModel.findOne({ where: { login: name } });
   }
 }
 
