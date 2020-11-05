@@ -99,7 +99,7 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.split(' ')?.[1];
 
   if (!token) {
-    res.status(STATUS.FORBIDDEN).send(' Forbidden Error');
+    res.status(STATUS.FORBIDDEN).send('Forbidden Error');
   }
 
   return jwt.verify(token as string, process.env.SECRET as string, (err) => {
